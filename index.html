@@ -1,0 +1,2533 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 گیم نت پرو - سیستم مدیریت</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #22d3ee;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card: #1e293b;
+            --card-hover: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--dark) 0%, var(--darker) 100%);
+            border-left: 1px solid var(--border);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-header .logo {
+            font-size: 2.5rem;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .sidebar-header span {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            padding-right: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+        }
+
+        .nav-item:hover {
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-item .icon {
+            font-size: 1.3rem;
+            width: 28px;
+            text-align: center;
+        }
+
+        .nav-item .badge {
+            margin-right: auto;
+            background: var(--danger);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-right: 280px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 12px 20px 12px 45px;
+            border-radius: 12px;
+            color: var(--text);
+            width: 280px;
+            font-family: inherit;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-box .icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            filter: blur(50px);
+            opacity: 0.3;
+        }
+
+        .stat-card.purple::before {
+            background: var(--primary);
+        }
+
+        .stat-card.cyan::before {
+            background: var(--secondary);
+        }
+
+        .stat-card.green::before {
+            background: var(--success);
+        }
+
+        .stat-card.orange::before {
+            background: var(--warning);
+        }
+
+        .stat-card .icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-card.purple .icon-box {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .stat-card.cyan .icon-box {
+            background: rgba(34, 211, 238, 0.2);
+        }
+
+        .stat-card.green .icon-box {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .stat-card.orange .icon-box {
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .stat-card h3 {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-card .change {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        .stat-card .change.up {
+            color: var(--success);
+        }
+
+        .stat-card .change.down {
+            color: var(--danger);
+        }
+
+        /* PC Grid */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-tab:hover,
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .pc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .pc-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .pc-card.available {
+            border-color: var(--success);
+        }
+
+        .pc-card.occupied {
+            border-color: var(--danger);
+            background: linear-gradient(135deg, var(--card), rgba(239, 68, 68, 0.1));
+        }
+
+        .pc-card.reserved {
+            border-color: var(--warning);
+        }
+
+        .pc-card.maintenance {
+            border-color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .pc-card .pc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .pc-card .pc-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .pc-card .pc-icon {
+            font-size: 2rem;
+        }
+
+        .pc-card .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .pc-card.available .status-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .pc-card.occupied .status-badge {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .pc-card.reserved .status-badge {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .pc-card .timer {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pc-card .user-info {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .pc-card .user-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .pc-card .user-details {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .pc-card .pc-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pc-card .pc-actions button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        /* Panels */
+        .panels-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h4 {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-body {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Orders List */
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .order-item .pc-badge {
+            background: var(--primary);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .order-item .order-details {
+            flex: 1;
+        }
+
+        .order-item .order-items {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .order-item .order-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .order-item .order-price {
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .order-item .order-status {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .order-item .order-status.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .order-item .order-status.done {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        /* Quick Actions */
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quick-action:hover {
+            background: var(--primary);
+            transform: translateX(-5px);
+        }
+
+        .quick-action .icon {
+            font-size: 1.5rem;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .quick-action h5 {
+            font-weight: 600;
+        }
+
+        .quick-action p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .quick-action:hover p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--danger);
+        }
+
+        .modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: var(--dark);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Time Options */
+        .time-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .time-option {
+            padding: 15px;
+            text-align: center;
+            background: var(--dark);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .time-option:hover,
+        .time-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .time-option .duration {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .time-option .price {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* Menu Items */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .menu-item {
+            background: var(--dark);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .menu-item:hover {
+            border-color: var(--primary);
+        }
+
+        .menu-item.selected {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .menu-item .item-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-item .item-price {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .menu-item .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .menu-item .quantity-control button {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .menu-item .quantity {
+            font-weight: 700;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* Reports Section */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .report-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .report-card h4 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, var(--dark), var(--darker));
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            gap: 10px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--primary), var(--secondary));
+            border-radius: 8px 8px 0 0;
+            min-height: 20px;
+            transition: height 0.5s;
+        }
+
+        /* Live Time */
+        .live-time {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--card);
+            padding: 15px 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .live-time .time {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+        }
+
+        .live-time .date {
+            color: var(--text-muted);
+        }
+
+        /* Notifications */
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--card);
+            padding: 20px 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(-150%);
+            transition: transform 0.3s;
+            z-index: 2000;
+        }
+
+        .notification-toast.show {
+            transform: translateX(0);
+        }
+
+        .notification-toast .icon {
+            font-size: 2rem;
+        }
+
+        .notification-toast.success {
+            border-right: 4px solid var(--success);
+        }
+
+        .notification-toast.warning {
+            border-right: 4px solid var(--warning);
+        }
+
+        .notification-toast.error {
+            border-right: 4px solid var(--danger);
+        }
+
+        /* Users Table */
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .users-table th {
+            background: var(--dark);
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .users-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .credit-badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .credit-badge.high {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .credit-badge.medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .credit-badge.low {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-right: 0;
+            }
+
+            .panels-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .time-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 12px;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 200;
+        }
+
+        @media (max-width: 1024px) {
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        /* Games Section */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .game-card {
+            background: var(--card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-card .game-image {
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .game-card .game-info {
+            padding: 15px;
+        }
+
+        .game-card .game-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .game-card .game-genre {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="logo">🎮</span>
+            <div>
+                <h1>گیم نت پرو</h1>
+                <span>پنل مدیریت</span>
+            </div>
+        </div>
+
+        <nav>
+            <div class="nav-section">
+                <div class="nav-section-title">منوی اصلی</div>
+                <div class="nav-item active" onclick="showSection('dashboard', this)">
+                    <span class="icon">📊</span>
+                    <span>داشبورد</span>
+                </div>
+                <div class="nav-item" onclick="showSection('computers', this)">
+                    <span class="icon">🖥️</span>
+                    <span>سیستم‌ها</span>
+                    <span class="badge">3</span>
+                </div>
+                <div class="nav-item" onclick="showSection('users', this)">
+                    <span class="icon">👥</span>
+                    <span>کاربران</span>
+                </div>
+                <div class="nav-item" onclick="showSection('cafe', this)">
+                    <span class="icon">☕</span>
+                    <span>بوفه</span>
+                    <span class="badge">2</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">مدیریت</div>
+                <div class="nav-item" onclick="showSection('games', this)">
+                    <span class="icon">🎯</span>
+                    <span>بازی‌ها</span>
+                </div>
+                <div class="nav-item" onclick="showSection('reservations', this)">
+                    <span class="icon">📅</span>
+                    <span>رزروها</span>
+                </div>
+                <div class="nav-item" onclick="showSection('reports', this)">
+                    <span class="icon">📈</span>
+                    <span>گزارشات</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">تنظیمات</div>
+                <div class="nav-item" onclick="showSection('pricing', this)">
+                    <span class="icon">💰</span>
+                    <span>تعرفه‌ها</span>
+                </div>
+                <div class="nav-item" onclick="showSection('settings', this)">
+                    <span class="icon">⚙️</span>
+                    <span>تنظیمات</span>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section class="page-section active" id="section-dashboard">
+            <div class="header">
+                <div class="header-title">
+                    <h2>📊 داشبورد</h2>
+                    <p>خوش آمدید! وضعیت گیم نت را مشاهده کنید</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <span class="icon">🔍</span>
+                        <input type="text" placeholder="جستجوی کاربر یا سیستم...">
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('newSession')">
+                        <span>➕</span>
+                        جلسه جدید
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card purple">
+                    <div class="icon-box">🖥️</div>
+                    <h3>سیستم‌های فعال</h3>
+                    <div class="value" id="activePCs">8</div>
+                    <div class="change up">↑ 2 نسبت به دیروز</div>
+                </div>
+                <div class="stat-card cyan">
+                    <div class="icon-box">👥</div>
+                    <h3>کاربران آنلاین</h3>
+                    <div class="value" id="onlineUsers">8</div>
+                    <div class="change up">↑ 15%</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="icon-box">💰</div>
+                    <h3>درآمد امروز</h3>
+                    <div class="value"><span id="todayIncome">۲۴۵,۰۰۰</span> ت</div>
+                    <div class="change up">↑ ۳۵,۰۰۰ ت</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="icon-box">☕</div>
+                    <h3>سفارشات بوفه</h3>
+                    <div class="value" id="cafeOrders">12</div>
+                    <div class="change">2 در انتظار</div>
+                </div>
+            </div>
+
+            <!-- PC Grid -->
+            <div class="section-title">
+                <h3>🖥️ وضعیت سیستم‌ها</h3>
+                <div class="filter-tabs">
+                    <span class="filter-tab active" onclick="filterPCs('all', this)">همه</span>
+                    <span class="filter-tab" onclick="filterPCs('available', this)">آزاد</span>
+                    <span class="filter-tab" onclick="filterPCs('occupied', this)">در حال استفاده</span>
+                    <span class="filter-tab" onclick="filterPCs('reserved', this)">رزرو شده</span>
+                </div>
+            </div>
+
+            <div class="pc-grid" id="pcGrid">
+                <!-- PCs will be generated by JavaScript -->
+            </div>
+
+            <!-- Bottom Panels -->
+            <div class="panels-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>☕ سفارشات بوفه</h4>
+                        <button class="btn btn-outline" onclick="openModal('newOrder')">+ سفارش جدید</button>
+                    </div>
+                    <div class="panel-body" id="ordersPanel">
+                        <!-- Orders will be generated by JavaScript -->
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>⚡ دسترسی سریع</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="quick-action" onclick="openModal('addCredit')">
+                            <span class="icon">💳</span>
+                            <div>
+                                <h5>شارژ اعتبار</h5>
+                                <p>افزایش موجودی کاربر</p>
+                            </div>
+                        </div>
+                        <div class="quick-action" onclick="openModal('newUser')">
+                            <span class="icon">👤</span>
+                            <div>
+                                <h5>کاربر جدید</h5>
+                                <p>ثبت‌نام مشتری جدید</p>
+                            </div>
+                        </div>
+                        <div class="quick-action" onclick="openModal('reservation')">
+                            <span class="icon">📅</span>
+                            <div>
+                                <h5>رزرو سیستم</h5>
+                                <p>رزرو برای آینده</p>
+                            </div>
+                        </div>
+                        <div class="quick-action"
+                            onclick="showSection('reports', document.querySelector('.nav-item:nth-child(7)'))">
+                            <span class="icon">📊</span>
+                            <div>
+                                <h5>گزارش روزانه</h5>
+                                <p>مشاهده آمار امروز</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Computers Section -->
+        <section class="page-section" id="section-computers">
+            <div class="header">
+                <div class="header-title">
+                    <h2>🖥️ مدیریت سیستم‌ها</h2>
+                    <p>مدیریت و نظارت بر تمام سیستم‌های گیم نت</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openModal('addPC')">
+                        <span>➕</span>
+                        افزودن سیستم
+                    </button>
+                </div>
+            </div>
+
+            <div class="pc-grid" id="pcGridFull">
+                <!-- Full PC management grid -->
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section class="page-section" id="section-users">
+            <div class="header">
+                <div class="header-title">
+                    <h2>👥 مدیریت کاربران</h2>
+                    <p>لیست تمام مشتریان ثبت‌نام شده</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <span class="icon">🔍</span>
+                        <input type="text" placeholder="جستجوی کاربر..." id="userSearch" onkeyup="searchUsers()">
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('newUser')">
+                        <span>➕</span>
+                        کاربر جدید
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-body" style="max-height: none;">
+                    <table class="users-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>کاربر</th>
+                                <th>شماره تماس</th>
+                                <th>اعتبار</th>
+                                <th>کل استفاده</th>
+                                <th>آخرین بازدید</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be generated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cafe Section -->
+        <section class="page-section" id="section-cafe">
+            <div class="header">
+                <div class="header-title">
+                    <h2>☕ مدیریت بوفه</h2>
+                    <p>منوی بوفه و سفارشات</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openModal('addMenuItem')">
+                        <span>➕</span>
+                        آیتم جدید
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card green">
+                    <div class="icon-box">💵</div>
+                    <h3>فروش امروز بوفه</h3>
+                    <div class="value">۸۵,۰۰۰ ت</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="icon-box">📦</div>
+                    <h3>تعداد سفارشات</h3>
+                    <div class="value">12</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="icon-box">⭐</div>
+                    <h3>پرفروش‌ترین</h3>
+                    <div class="value" style="font-size: 1.2rem;">قهوه اسپرسو</div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h3>📋 منوی بوفه</h3>
+            </div>
+
+            <div class="games-grid" id="menuGrid">
+                <!-- Menu items will be generated -->
+            </div>
+        </section>
+
+        <!-- Games Section -->
+        <section class="page-section" id="section-games">
+            <div class="header">
+                <div class="header-title">
+                    <h2>🎯 بازی‌های موجود</h2>
+                    <p>لیست بازی‌های نصب شده روی سیستم‌ها</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openModal('addGame')">
+                        <span>➕</span>
+                        افزودن بازی
+                    </button>
+                </div>
+            </div>
+
+            <div class="games-grid" id="gamesGrid">
+                <!-- Games will be generated -->
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section class="page-section" id="section-reports">
+            <div class="header">
+                <div class="header-title">
+                    <h2>📈 گزارشات</h2>
+                    <p>آمار و گزارشات مالی</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline">
+                        <span>📥</span>
+                        دانلود گزارش
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card green">
+                    <div class="icon-box">💰</div>
+                    <h3>درآمد این هفته</h3>
+                    <div class="value">۱,۲۵۰,۰۰۰ ت</div>
+                    <div class="change up">↑ ۱۵% نسبت به هفته قبل</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="icon-box">⏱️</div>
+                    <h3>ساعات استفاده</h3>
+                    <div class="value">۱۲۵ ساعت</div>
+                </div>
+                <div class="stat-card cyan">
+                    <div class="icon-box">👥</div>
+                    <h3>کاربران جدید</h3>
+                    <div class="value">۸ نفر</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="icon-box">🎮</div>
+                    <h3>پرطرفدارترین بازی</h3>
+                    <div class="value" style="font-size: 1.2rem;">FIFA 24</div>
+                </div>
+            </div>
+
+            <div class="reports-grid">
+                <div class="report-card">
+                    <h4>📊 نمودار درآمد هفتگی</h4>
+                    <div class="chart-placeholder" id="weeklyChart">
+                        <!-- Chart bars will be generated -->
+                    </div>
+                </div>
+                <div class="report-card">
+                    <h4>🕐 ساعات پیک</h4>
+                    <div class="chart-placeholder" id="peakChart">
+                        <!-- Chart bars will be generated -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="page-section" id="section-pricing">
+            <div class="header">
+                <div class="header-title">
+                    <h2>💰 تعرفه‌ها</h2>
+                    <p>تنظیم قیمت‌ها و تعرفه‌های گیم نت</p>
+                </div>
+            </div>
+
+            <div class="reports-grid">
+                <div class="report-card">
+                    <h4>⏱️ تعرفه ساعتی</h4>
+                    <div class="form-group">
+                        <label>قیمت هر ساعت (تومان)</label>
+                        <input type="number" value="15000" id="hourlyRate">
+                    </div>
+                    <div class="form-group">
+                        <label>قیمت نیم ساعت (تومان)</label>
+                        <input type="number" value="8000" id="halfHourRate">
+                    </div>
+                    <button class="btn btn-success" onclick="savePricing()">💾 ذخیره تغییرات</button>
+                </div>
+                <div class="report-card">
+                    <h4>🎁 پکیج‌های ویژه</h4>
+                    <div class="form-group">
+                        <label>پکیج ۳ ساعته (تومان)</label>
+                        <input type="number" value="40000">
+                    </div>
+                    <div class="form-group">
+                        <label>پکیج شبانه - ۱۰ شب تا ۶ صبح (تومان)</label>
+                        <input type="number" value="80000">
+                    </div>
+                    <button class="btn btn-success">💾 ذخیره تغییرات</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section class="page-section" id="section-settings">
+            <div class="header">
+                <div class="header-title">
+                    <h2>⚙️ تنظیمات</h2>
+                    <p>تنظیمات کلی سیستم</p>
+                </div>
+            </div>
+
+            <div class="reports-grid">
+                <div class="report-card">
+                    <h4>🏪 اطلاعات گیم نت</h4>
+                    <div class="form-group">
+                        <label>نام گیم نت</label>
+                        <input type="text" value="گیم نت پرو">
+                    </div>
+                    <div class="form-group">
+                        <label>آدرس</label>
+                        <input type="text" value="تهران، خیابان آزادی">
+                    </div>
+                    <div class="form-group">
+                        <label>شماره تماس</label>
+                        <input type="text" value="۰۲۱-۱۲۳۴۵۶۷۸">
+                    </div>
+                    <button class="btn btn-success">💾 ذخیره</button>
+                </div>
+                <div class="report-card">
+                    <h4>🔔 اعلان‌ها</h4>
+                    <div class="form-group">
+                        <label>هشدار اتمام زمان (دقیقه قبل)</label>
+                        <input type="number" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label>هشدار کم شدن اعتبار (تومان)</label>
+                        <input type="number" value="10000">
+                    </div>
+                    <button class="btn btn-success">💾 ذخیره</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reservations Section -->
+        <section class="page-section" id="section-reservations">
+            <div class="header">
+                <div class="header-title">
+                    <h2>📅 رزروها</h2>
+                    <p>مدیریت رزرو سیستم‌ها</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openModal('reservation')">
+                        <span>➕</span>
+                        رزرو جدید
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-body" style="max-height: none;" id="reservationsPanel">
+                    <!-- Reservations will be shown here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Live Time Widget -->
+    <div class="live-time">
+        <span style="font-size: 1.5rem;">🕐</span>
+        <div>
+            <div class="time" id="liveTime">۱۴:۳۰:۴۵</div>
+            <div class="date" id="liveDate">شنبه، ۱۵ دی ۱۴۰۳</div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="notification-toast" id="notification">
+        <span class="icon">✅</span>
+        <div>
+            <strong id="notifTitle">عملیات موفق</strong>
+            <p id="notifMessage">تغییرات ذخیره شد</p>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- New Session Modal -->
+    <div class="modal-overlay" id="modal-newSession">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>🎮 شروع جلسه جدید</h3>
+                <button class="modal-close" onclick="closeModal('newSession')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>انتخاب سیستم</label>
+                        <select id="sessionPC">
+                            <option value="">انتخاب کنید...</option>
+                            <option value="1">سیستم ۱</option>
+                            <option value="2">سیستم ۲</option>
+                            <option value="3">سیستم ۳</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>کاربر</label>
+                        <select id="sessionUser">
+                            <option value="">کاربر مهمان</option>
+                            <option value="1">علی محمدی</option>
+                            <option value="2">رضا احمدی</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>مدت زمان</label>
+                    <div class="time-options" id="timeOptions">
+                        <div class="time-option" onclick="selectTime(this, 30)">
+                            <div class="duration">۳۰ دقیقه</div>
+                            <div class="price">۸,۰۰۰ ت</div>
+                        </div>
+                        <div class="time-option selected" onclick="selectTime(this, 60)">
+                            <div class="duration">۱ ساعت</div>
+                            <div class="price">۱۵,۰۰۰ ت</div>
+                        </div>
+                        <div class="time-option" onclick="selectTime(this, 120)">
+                            <div class="duration">۲ ساعت</div>
+                            <div class="price">۲۸,۰۰۰ ت</div>
+                        </div>
+                        <div class="time-option" onclick="selectTime(this, 180)">
+                            <div class="duration">۳ ساعت</div>
+                            <div class="price">۴۰,۰۰۰ ت</div>
+                        </div>
+                        <div class="time-option" onclick="selectTime(this, 0)">
+                            <div class="duration">نامحدود</div>
+                            <div class="price">بر اساس زمان</div>
+                        </div>
+                        <div class="time-option" onclick="selectTime(this, 'custom')">
+                            <div class="duration">دلخواه</div>
+                            <div class="price">وارد کنید</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="customTimeGroup" style="display: none;">
+                    <label>زمان دلخواه (دقیقه)</label>
+                    <input type="number" id="customTime" placeholder="مثال: ۹۰">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('newSession')">انصراف</button>
+                <button class="btn btn-success" onclick="startSession()">🎮 شروع جلسه</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Order Modal -->
+    <div class="modal-overlay" id="modal-newOrder">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>☕ سفارش جدید بوفه</h3>
+                <button class="modal-close" onclick="closeModal('newOrder')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>سیستم مقصد</label>
+                    <select id="orderPC">
+                        <option value="1">سیستم ۱ - علی محمدی</option>
+                        <option value="3">سیستم ۳ - رضا احمدی</option>
+                        <option value="5">سیستم ۵ - محمد رضایی</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>انتخاب آیتم‌ها</label>
+                    <div class="menu-grid" id="orderMenuGrid">
+                        <!-- Items generated by JS -->
+                    </div>
+                </div>
+
+                <div class="form-group" style="background: var(--dark); padding: 15px; border-radius: 12px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>جمع کل:</span>
+                        <strong id="orderTotal" style="color: var(--success); font-size: 1.3rem;">۰ تومان</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('newOrder')">انصراف</button>
+                <button class="btn btn-success" onclick="submitOrder()">✅ ثبت سفارش</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New User Modal -->
+    <div class="modal-overlay" id="modal-newUser">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>👤 ثبت کاربر جدید</h3>
+                <button class="modal-close" onclick="closeModal('newUser')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>نام</label>
+                        <input type="text" id="newUserFirstName" placeholder="نام">
+                    </div>
+                    <div class="form-group">
+                        <label>نام خانوادگی</label>
+                        <input type="text" id="newUserLastName" placeholder="نام خانوادگی">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>شماره موبایل</label>
+                    <input type="tel" id="newUserPhone" placeholder="۰۹۱۲۳۴۵۶۷۸۹">
+                </div>
+                <div class="form-group">
+                    <label>شارژ اولیه (تومان)</label>
+                    <input type="number" id="newUserCredit" placeholder="مثال: ۵۰۰۰۰" value="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('newUser')">انصراف</button>
+                <button class="btn btn-success" onclick="addNewUser()">✅ ثبت کاربر</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Credit Modal -->
+    <div class="modal-overlay" id="modal-addCredit">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>💳 شارژ اعتبار</h3>
+                <button class="modal-close" onclick="closeModal('addCredit')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>انتخاب کاربر</label>
+                    <select id="creditUser">
+                        <option value="">انتخاب کنید...</option>
+                        <option value="1">علی محمدی - موجودی: ۲۵,۰۰۰ ت</option>
+                        <option value="2">رضا احمدی - موجودی: ۱۲,۰۰۰ ت</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>مبلغ شارژ (تومان)</label>
+                    <div class="time-options">
+                        <div class="time-option" onclick="selectCredit(this, 20000)">
+                            <div class="duration">۲۰,۰۰۰</div>
+                        </div>
+                        <div class="time-option" onclick="selectCredit(this, 50000)">
+                            <div class="duration">۵۰,۰۰۰</div>
+                        </div>
+                        <div class="time-option" onclick="selectCredit(this, 100000)">
+                            <div class="duration">۱۰۰,۰۰۰</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>یا مبلغ دلخواه</label>
+                    <input type="number" id="customCredit" placeholder="مبلغ به تومان">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('addCredit')">انصراف</button>
+                <button class="btn btn-success" onclick="addCredit()">💰 شارژ حساب</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reservation Modal -->
+    <div class="modal-overlay" id="modal-reservation">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>📅 رزرو سیستم</h3>
+                <button class="modal-close" onclick="closeModal('reservation')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>سیستم</label>
+                        <select>
+                            <option>سیستم ۲</option>
+                            <option>سیستم ۴</option>
+                            <option>سیستم ۶</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>کاربر</label>
+                        <select>
+                            <option>علی محمدی</option>
+                            <option>رضا احمدی</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>تاریخ</label>
+                        <input type="date">
+                    </div>
+                    <div class="form-group">
+                        <label>ساعت شروع</label>
+                        <input type="time">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>مدت (ساعت)</label>
+                    <select>
+                        <option>۱ ساعت</option>
+                        <option>۲ ساعت</option>
+                        <option>۳ ساعت</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('reservation')">انصراف</button>
+                <button class="btn btn-success" onclick="saveReservation()">✅ ثبت رزرو</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PC Control Modal -->
+    <div class="modal-overlay" id="modal-pcControl">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="pcControlTitle">🖥️ کنترل سیستم ۱</h3>
+                <button class="modal-close" onclick="closeModal('pcControl')">✕</button>
+            </div>
+            <div class="modal-body" id="pcControlBody">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer" id="pcControlFooter">
+                <!-- Dynamic buttons -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const state = {
+            pcs: [],
+            users: [],
+            orders: [],
+            menuItems: [],
+            games: [],
+            hourlyRate: 15000,
+            timers: {}
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initializePCs();
+            initializeUsers();
+            initializeMenu();
+            initializeGames();
+            initializeOrders();
+            renderPCGrid();
+            renderUsers();
+            renderMenuGrid();
+            renderGamesGrid();
+            renderOrders();
+            renderCharts();
+            startClock();
+            startTimers();
+        });
+
+        // Initialize PCs
+        function initializePCs() {
+            const statuses = ['available', 'occupied', 'available', 'reserved', 'occupied',
+                'available', 'maintenance', 'occupied', 'available', 'occupied',
+                'available', 'occupied'];
+            const users = ['علی محمدی', 'رضا احمدی', 'محمد رضایی', 'امیر حسینی', 'سعید کریمی'];
+
+            for (let i = 1; i <= 12; i++) {
+                const status = statuses[i - 1];
+                const pc = {
+                    id: i,
+                    name: `سیستم ${i}`,
+                    status: status,
+                    user: status === 'occupied' ? users[Math.floor(Math.random() * users.length)] : null,
+                    startTime: status === 'occupied' ? Date.now() - Math.floor(Math.random() * 3600000) : null,
+                    duration: status === 'occupied' ? (Math.floor(Math.random() * 3) + 1) * 60 : null, // minutes
+                    specs: 'Core i7, RTX 3070, 32GB RAM'
+                };
+                state.pcs.push(pc);
+            }
+        }
+
+        // Initialize Users
+        function initializeUsers() {
+            state.users = [
+                { id: 1, name: 'علی محمدی', phone: '۰۹۱۲۳۴۵۶۷۸۹', credit: 45000, totalHours: 24, lastVisit: 'امروز' },
+                { id: 2, name: 'رضا احمدی', phone: '۰۹۳۵۱۲۳۴۵۶۷', credit: 12000, totalHours: 56, lastVisit: 'دیروز' },
+                { id: 3, name: 'محمد رضایی', phone: '۰۹۱۹۸۷۶۵۴۳۲', credit: 78000, totalHours: 120, lastVisit: 'امروز' },
+                { id: 4, name: 'امیر حسینی', phone: '۰۹۳۰۲۲۲۳۳۳۴', credit: 5000, totalHours: 18, lastVisit: '۳ روز پیش' },
+                { id: 5, name: 'سعید کریمی', phone: '۰۹۱۲۱۱۱۲۲۲۳', credit: 150000, totalHours: 200, lastVisit: 'امروز' },
+            ];
+        }
+
+        // Initialize Menu
+        function initializeMenu() {
+            state.menuItems = [
+                { id: 1, name: 'چای', price: 5000, icon: '🍵', category: 'نوشیدنی' },
+                { id: 2, name: 'قهوه اسپرسو', price: 15000, icon: '☕', category: 'نوشیدنی' },
+                { id: 3, name: 'نسکافه', price: 12000, icon: '☕', category: 'نوشیدنی' },
+                { id: 4, name: 'نوشابه', price: 8000, icon: '🥤', category: 'نوشیدنی' },
+                { id: 5, name: 'آبمیوه', price: 15000, icon: '🧃', category: 'نوشیدنی' },
+                { id: 6, name: 'ساندویچ', price: 25000, icon: '🥪', category: 'خوراکی' },
+                { id: 7, name: 'پیتزا تکی', price: 35000, icon: '🍕', category: 'خوراکی' },
+                { id: 8, name: 'چیپس', price: 10000, icon: '🍟', category: 'تنقلات' },
+                { id: 9, name: 'شکلات', price: 8000, icon: '🍫', category: 'تنقلات' },
+                { id: 10, name: 'بیسکویت', price: 5000, icon: '🍪', category: 'تنقلات' },
+            ];
+        }
+
+        // Initialize Games
+        function initializeGames() {
+            state.games = [
+                { id: 1, name: 'FIFA 24', icon: '⚽', genre: 'ورزشی' },
+                { id: 2, name: 'GTA V', icon: '🚗', genre: 'اکشن' },
+                { id: 3, name: 'Call of Duty', icon: '🔫', genre: 'تیراندازی' },
+                { id: 4, name: 'Fortnite', icon: '🎯', genre: 'بتل رویال' },
+                { id: 5, name: 'Minecraft', icon: '⛏️', genre: 'سندباکس' },
+                { id: 6, name: 'League of Legends', icon: '⚔️', genre: 'موبا' },
+                { id: 7, name: 'Valorant', icon: '🎮', genre: 'تیراندازی' },
+                { id: 8, name: 'CS2', icon: '💣', genre: 'تیراندازی' },
+                { id: 9, name: 'Dota 2', icon: '🗡️', genre: 'موبا' },
+                { id: 10, name: 'PUBG', icon: '🪖', genre: 'بتل رویال' },
+                { id: 11, name: 'Apex Legends', icon: '🔥', genre: 'بتل رویال' },
+                { id: 12, name: 'Rocket League', icon: '🚀', genre: 'ورزشی' },
+            ];
+        }
+
+        // Initialize Orders
+        function initializeOrders() {
+            state.orders = [
+                { id: 1, pc: 1, items: 'قهوه اسپرسو، چیپس', price: 25000, status: 'pending', time: '۱۴:۲۵' },
+                { id: 2, pc: 5, items: 'نوشابه x2', price: 16000, status: 'done', time: '۱۴:۱۰' },
+                { id: 3, pc: 8, items: 'ساندویچ، نسکافه', price: 37000, status: 'pending', time: '۱۴:۳۰' },
+            ];
+        }
+
+        // Render PC Grid
+        function renderPCGrid() {
+            const grid = document.getElementById('pcGrid');
+            const gridFull = document.getElementById('pcGridFull');
+
+            const html = state.pcs.map(pc => {
+                let statusText = '';
+                let timerHtml = '';
+                let userHtml = '';
+                let actionsHtml = '';
+
+                switch (pc.status) {
+                    case 'available':
+                        statusText = 'آزاد';
+                        actionsHtml = `
+                            <button style="background: var(--success); color: white;" onclick="openSessionForPC(${pc.id})">شروع</button>
+                            <button style="background: var(--warning); color: white;" onclick="openReserveForPC(${pc.id})">رزرو</button>
+                        `;
+                        break;
+                    case 'occupied':
+                        statusText = 'در حال استفاده';
+                        timerHtml = `<div class="timer" id="timer-${pc.id}">۰۰:۰۰:۰۰</div>`;
+                        userHtml = `
+                            <div class="user-info">
+                                <div class="user-name">👤 ${pc.user}</div>
+                                <div class="user-details">${pc.duration} دقیقه</div>
+                            </div>
+                        `;
+                        actionsHtml = `
+                            <button style="background: var(--danger); color: white;" onclick="endSession(${pc.id})">پایان</button>
+                            <button style="background: var(--primary); color: white;" onclick="extendSession(${pc.id})">تمدید</button>
+                        `;
+                        break;
+                    case 'reserved':
+                        statusText = 'رزرو شده';
+                        actionsHtml = `
+                            <button style="background: var(--success); color: white;" onclick="startReserved(${pc.id})">شروع</button>
+                            <button style="background: var(--danger); color: white;" onclick="cancelReserve(${pc.id})">لغو</button>
+                        `;
+                        break;
+                    case 'maintenance':
+                        statusText = 'تعمیرات';
+                        actionsHtml = `
+                            <button style="background: var(--success); color: white;" onclick="setAvailable(${pc.id})">فعال‌سازی</button>
+                        `;
+                        break;
+                }
+
+                return `
+                    <div class="pc-card ${pc.status}" onclick="openPCControl(${pc.id})" data-status="${pc.status}">
+                        <div class="pc-header">
+                            <div>
+                                <div class="pc-number">${pc.name}</div>
+                                <span class="status-badge">${statusText}</span>
+                            </div>
+                            <span class="pc-icon">🖥️</span>
+                        </div>
+                        ${timerHtml}
+                        ${userHtml}
+                        <div class="pc-actions" onclick="event.stopPropagation()">
+                            ${actionsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            grid.innerHTML = html;
+            if (gridFull) gridFull.innerHTML = html;
+            updateStats();
+        }
+
+        // Render Users
+        function renderUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = state.users.map(user => {
+                let creditClass = user.credit >= 50000 ? 'high' : user.credit >= 20000 ? 'medium' : 'low';
+                return `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div class="user-avatar">${user.name.charAt(0)}</div>
+                                <span>${user.name}</span>
+                            </div>
+                        </td>
+                        <td>${user.phone}</td>
+                        <td><span class="credit-badge ${creditClass}">${user.credit.toLocaleString('fa-IR')} ت</span></td>
+                        <td>${user.totalHours} ساعت</td>
+                        <td>${user.lastVisit}</td>
+                        <td>
+                            <button class="btn btn-outline" style="padding: 8px 12px; font-size: 0.8rem;" onclick="openAddCreditFor(${user.id})">💳 شارژ</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render Menu Grid
+        function renderMenuGrid() {
+            const grid = document.getElementById('menuGrid');
+            if (!grid) return;
+
+            grid.innerHTML = state.menuItems.map(item => `
+                <div class="game-card">
+                    <div class="game-image">${item.icon}</div>
+                    <div class="game-info">
+                        <div class="game-name">${item.name}</div>
+                        <div class="game-genre" style="color: var(--success); font-weight: 600;">
+                            ${item.price.toLocaleString('fa-IR')} تومان
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Order modal menu
+            const orderGrid = document.getElementById('orderMenuGrid');
+            if (orderGrid) {
+                orderGrid.innerHTML = state.menuItems.map(item => `
+                    <div class="menu-item" id="menu-item-${item.id}">
+                        <div class="item-name">${item.icon} ${item.name}</div>
+                        <div class="item-price">${item.price.toLocaleString('fa-IR')} ت</div>
+                        <div class="quantity-control">
+                            <button onclick="changeQuantity(${item.id}, -1)">-</button>
+                            <span class="quantity" id="qty-${item.id}">0</span>
+                            <button onclick="changeQuantity(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Render Games Grid
+        function renderGamesGrid() {
+            const grid = document.getElementById('gamesGrid');
+            if (!grid) return;
+
+            grid.innerHTML = state.games.map(game => `
+                <div class="game-card">
+                    <div class="game-image">${game.icon}</div>
+                    <div class="game-info">
+                        <div class="game-name">${game.name}</div>
+                        <div class="game-genre">${game.genre}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Orders
+        function renderOrders() {
+            const panel = document.getElementById('ordersPanel');
+            if (!panel) return;
+
+            panel.innerHTML = state.orders.map(order => `
+                <div class="order-item">
+                    <span class="pc-badge">PC${order.pc}</span>
+                    <div class="order-details">
+                        <div class="order-items">${order.items}</div>
+                        <div class="order-time">${order.time}</div>
+                    </div>
+                    <span class="order-price">${order.price.toLocaleString('fa-IR')} ت</span>
+                    <span class="order-status ${order.status}">${order.status === 'pending' ? 'در انتظار' : 'تحویل شد'}</span>
+                    ${order.status === 'pending' ? `<button class="btn btn-success" style="padding: 8px 12px;" onclick="completeOrder(${order.id})">✓</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Render Charts
+        function renderCharts() {
+            const weeklyChart = document.getElementById('weeklyChart');
+            const peakChart = document.getElementById('peakChart');
+
+            if (weeklyChart) {
+                const heights = [60, 80, 45, 90, 70, 95, 85];
+                weeklyChart.innerHTML = heights.map(h => `<div class="chart-bar" style="height: ${h}%"></div>`).join('');
+            }
+
+            if (peakChart) {
+                const heights = [30, 45, 60, 80, 95, 90, 85, 70, 50, 35, 25, 20];
+                peakChart.innerHTML = heights.map(h => `<div class="chart-bar" style="height: ${h}%"></div>`).join('');
+            }
+        }
+
+        // Update Stats
+        function updateStats() {
+            const activePCs = state.pcs.filter(pc => pc.status === 'occupied').length;
+            document.getElementById('activePCs').textContent = activePCs;
+            document.getElementById('onlineUsers').textContent = activePCs;
+        }
+
+        // Timer Functions
+        function startTimers() {
+            setInterval(() => {
+                state.pcs.forEach(pc => {
+                    if (pc.status === 'occupied' && pc.startTime) {
+                        const elapsed = Date.now() - pc.startTime;
+                        const timerEl = document.getElementById(`timer-${pc.id}`);
+                        if (timerEl) {
+                            timerEl.textContent = formatTime(elapsed);
+                        }
+
+                        // Check if time is almost up
+                        if (pc.duration) {
+                            const remaining = (pc.duration * 60 * 1000) - elapsed;
+                            if (remaining <= 5 * 60 * 1000 && remaining > 4.9 * 60 * 1000) {
+                                showNotification('warning', 'هشدار زمان', `${pc.name}: ۵ دقیقه باقیمانده`);
+                            }
+                        }
+                    }
+                });
+            }, 1000);
+        }
+
+        function formatTime(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // Clock
+        function startClock() {
+            function updateClock() {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('fa-IR');
+                const dateStr = now.toLocaleDateString('fa-IR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                document.getElementById('liveTime').textContent = timeStr;
+                document.getElementById('liveDate').textContent = dateStr;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // Navigation
+        function showSection(sectionId, navItem) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(`section-${sectionId}`).classList.add('active');
+            navItem.classList.add('active');
+
+            // Close mobile sidebar
+            document.getElementById('sidebar').classList.remove('open');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Filter PCs
+        function filterPCs(filter, tab) {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            document.querySelectorAll('.pc-card').forEach(card => {
+                if (filter === 'all' || card.dataset.status === filter) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(`modal-${modalId}`).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(`modal-${modalId}`).classList.remove('active');
+        }
+
+        // Time Selection
+        let selectedDuration = 60;
+        function selectTime(el, duration) {
+            document.querySelectorAll('.time-option').forEach(t => t.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedDuration = duration;
+
+            if (duration === 'custom') {
+                document.getElementById('customTimeGroup').style.display = 'block';
+            } else {
+                document.getElementById('customTimeGroup').style.display = 'none';
+            }
+        }
+
+        // Session Functions
+        function startSession() {
+            const pcId = document.getElementById('sessionPC').value;
+            if (!pcId) {
+                showNotification('error', 'خطا', 'لطفاً سیستم را انتخاب کنید');
+                return;
+            }
+
+            const pc = state.pcs.find(p => p.id == pcId);
+            pc.status = 'occupied';
+            pc.startTime = Date.now();
+            pc.duration = selectedDuration === 'custom'
+                ? parseInt(document.getElementById('customTime').value)
+                : selectedDuration;
+            pc.user = 'کاربر مهمان';
+
+            renderPCGrid();
+            closeModal('newSession');
+            showNotification('success', 'موفق', `جلسه در ${pc.name} شروع شد`);
+        }
+
+        function endSession(pcId) {
+            const pc = state.pcs.find(p => p.id === pcId);
+            const elapsed = Date.now() - pc.startTime;
+            const cost = Math.ceil(elapsed / 3600000) * state.hourlyRate;
+
+            pc.status = 'available';
+            pc.user = null;
+            pc.startTime = null;
+            pc.duration = null;
+
+            renderPCGrid();
+            showNotification('success', 'پایان جلسه', `هزینه: ${cost.toLocaleString('fa-IR')} تومان`);
+        }
+
+        function extendSession(pcId) {
+            const pc = state.pcs.find(p => p.id === pcId);
+            pc.duration += 60;
+            showNotification('success', 'تمدید', '۱ ساعت اضافه شد');
+        }
+
+        function openSessionForPC(pcId) {
+            document.getElementById('sessionPC').value = pcId;
+            openModal('newSession');
+        }
+
+        function setAvailable(pcId) {
+            const pc = state.pcs.find(p => p.id === pcId);
+            pc.status = 'available';
+            renderPCGrid();
+            showNotification('success', 'فعال‌سازی', `${pc.name} فعال شد`);
+        }
+
+        // Order Functions
+        const orderQuantities = {};
+        function changeQuantity(itemId, delta) {
+            if (!orderQuantities[itemId]) orderQuantities[itemId] = 0;
+            orderQuantities[itemId] = Math.max(0, orderQuantities[itemId] + delta);
+
+            document.getElementById(`qty-${itemId}`).textContent = orderQuantities[itemId];
+
+            const item = document.getElementById(`menu-item-${itemId}`);
+            if (orderQuantities[itemId] > 0) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+
+            updateOrderTotal();
+        }
+
+        function updateOrderTotal() {
+            let total = 0;
+            for (const [itemId, qty] of Object.entries(orderQuantities)) {
+                const item = state.menuItems.find(i => i.id == itemId);
+                if (item) total += item.price * qty;
+            }
+            document.getElementById('orderTotal').textContent = total.toLocaleString('fa-IR') + ' تومان';
+        }
+
+        function submitOrder() {
+            const items = [];
+            for (const [itemId, qty] of Object.entries(orderQuantities)) {
+                if (qty > 0) {
+                    const item = state.menuItems.find(i => i.id == itemId);
+                    items.push(`${item.name} x${qty}`);
+                }
+            }
+
+            if (items.length === 0) {
+                showNotification('error', 'خطا', 'لطفاً آیتمی انتخاب کنید');
+                return;
+            }
+
+            closeModal('newOrder');
+            showNotification('success', 'سفارش ثبت شد', items.join('، '));
+
+            // Reset quantities
+            for (const key in orderQuantities) {
+                orderQuantities[key] = 0;
+                document.getElementById(`qty-${key}`).textContent = '0';
+                document.getElementById(`menu-item-${key}`).classList.remove('selected');
+            }
+            updateOrderTotal();
+        }
+
+        function completeOrder(orderId) {
+            const order = state.orders.find(o => o.id === orderId);
+            order.status = 'done';
+            renderOrders();
+            showNotification('success', 'تحویل داده شد', `سفارش PC${order.pc}`);
+        }
+
+        // User Functions
+        function addNewUser() {
+            const firstName = document.getElementById('newUserFirstName').value;
+            const lastName = document.getElementById('newUserLastName').value;
+            const phone = document.getElementById('newUserPhone').value;
+            const credit = parseInt(document.getElementById('newUserCredit').value) || 0;
+
+            if (!firstName || !phone) {
+                showNotification('error', 'خطا', 'نام و شماره تماس الزامی است');
+                return;
+            }
+
+            state.users.push({
+                id: state.users.length + 1,
+                name: `${firstName} ${lastName}`,
+                phone: phone,
+                credit: credit,
+                totalHours: 0,
+                lastVisit: 'جدید'
+            });
+
+            renderUsers();
+            closeModal('newUser');
+            showNotification('success', 'کاربر اضافه شد', `${firstName} ${lastName}`);
+        }
+
+        function searchUsers() {
+            const query = document.getElementById('userSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTableBody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        // Credit Functions
+        let selectedCreditAmount = 0;
+        function selectCredit(el, amount) {
+            document.querySelectorAll('.time-option').forEach(t => t.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedCreditAmount = amount;
+            document.getElementById('customCredit').value = '';
+        }
+
+        function addCredit() {
+            const userId = document.getElementById('creditUser').value;
+            const customAmount = parseInt(document.getElementById('customCredit').value);
+            const amount = customAmount || selectedCreditAmount;
+
+            if (!userId) {
+                showNotification('error', 'خطا', 'کاربر را انتخاب کنید');
+                return;
+            }
+
+            if (!amount) {
+                showNotification('error', 'خطا', 'مبلغ را وارد کنید');
+                return;
+            }
+
+            const user = state.users.find(u => u.id == userId);
+            if (user) {
+                user.credit += amount;
+                renderUsers();
+            }
+
+            closeModal('addCredit');
+            showNotification('success', 'شارژ موفق', `${amount.toLocaleString('fa-IR')} تومان اضافه شد`);
+        }
+
+        // PC Control
+        function openPCControl(pcId) {
+            const pc = state.pcs.find(p => p.id === pcId);
+            const modal = document.getElementById('modal-pcControl');
+
+            document.getElementById('pcControlTitle').textContent = `🖥️ کنترل ${pc.name}`;
+
+            let bodyHtml = `
+                <div class="form-group">
+                    <label>مشخصات سخت‌افزاری</label>
+                    <div style="background: var(--dark); padding: 15px; border-radius: 12px;">
+                        ${pc.specs}
+                    </div>
+                </div>
+            `;
+
+            if (pc.status === 'occupied') {
+                bodyHtml += `
+                    <div class="form-group">
+                        <label>کاربر فعلی</label>
+                        <div style="background: var(--dark); padding: 15px; border-radius: 12px;">
+                            👤 ${pc.user}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>زمان استفاده</label>
+                        <div style="background: var(--dark); padding: 15px; border-radius: 12px; font-family: monospace; font-size: 1.5rem;">
+                            ${formatTime(Date.now() - pc.startTime)}
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('pcControlBody').innerHTML = bodyHtml;
+
+            let footerHtml = `<button class="btn btn-outline" onclick="closeModal('pcControl')">بستن</button>`;
+
+            if (pc.status === 'available') {
+                footerHtml += `<button class="btn btn-success" onclick="closeModal('pcControl'); openSessionForPC(${pc.id})">🎮 شروع جلسه</button>`;
+            } else if (pc.status === 'occupied') {
+                footerHtml += `
+                    <button class="btn btn-warning" onclick="closeModal('pcControl'); extendSession(${pc.id})">⏱️ تمدید</button>
+                    <button class="btn btn-danger" onclick="closeModal('pcControl'); endSession(${pc.id})">🛑 پایان</button>
+                `;
+            }
+
+            document.getElementById('pcControlFooter').innerHTML = footerHtml;
+            openModal('pcControl');
+        }
+
+        // Notification
+        function showNotification(type, title, message) {
+            const notif = document.getElementById('notification');
+            notif.className = `notification-toast ${type}`;
+            document.getElementById('notifTitle').textContent = title;
+            document.getElementById('notifMessage').textContent = message;
+
+            const icons = { success: '✅', warning: '⚠️', error: '❌' };
+            notif.querySelector('.icon').textContent = icons[type] || '📢';
+
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 3000);
+        }
+
+        // Save Pricing
+        function savePricing() {
+            state.hourlyRate = parseInt(document.getElementById('hourlyRate').value);
+            showNotification('success', 'ذخیره شد', 'تعرفه‌ها بروزرسانی شدند');
+        }
+
+        // Reservation
+        function saveReservation() {
+            closeModal('reservation');
+            showNotification('success', 'رزرو ثبت شد', 'سیستم برای شما رزرو شد');
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
